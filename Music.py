@@ -1,10 +1,11 @@
 def menu(login,register):
-    menu = input("Welcome to OCR's greatest music app. Choose either to register by pressing 1 else type anything else:")
-    if menu == "1":
+    menu = input("Welcome to OCR's greatest music app. To register press 'r'. To login press 'l':")
+    if menu == "r":
         register()
-    else:
+    elif menu == "l":
         login()
-
+    
+    
         
 def register():
     username = input("Please create a username:")
@@ -16,6 +17,7 @@ def register():
     writefile = open("Account.txt","w")
     writefile.write(username + '\n' + password + '\n' + name + '\n' + dob + '\n' + fave_artist + '\n' + fave_genre + '\n')
     writefile.close()
+    menu(login,register)  
     
 def login():
     checkusername = input("Please enter existing username:")
@@ -24,24 +26,48 @@ def login():
     u = file.readline().strip()
     p = file.readline().strip()
     if checkusername + checkpassword == u + p :
-        print("Welcome!")   
-    else:
+        print("Welcome!")
+        song_library(playlists,add_songs,view_songs)
+    elif checkusername + checkpassword != u + p:
         print("Access denied! Check Username and Password.")
         file.close()
-    song_list = input("Would you like to see your song titles?")
-    if song_list == 'yes':
-        with open('Songs.txt', 'r') as r:
+    menu(login,register)
+        
+def song_library(playlists,add_songs,view_songs):
+    song_library = input("To add new songs press '1'. To view your song library press '2'. To go to your playlists press '3':")
+    if song_library == "1":
+        add_songs()
+    elif song_library == "2":
+        view_songs()
+    elif song_library == "3":
+        playlists(create,view)
+    else:
+        menu(login,register)
+    
+        
+def add_songs():
+        song_title = input("Please enter your new song title:")
+        artist_name = input("Please enter the artist's name:")
+        song_length = input("Please enter the song length:")
+        writefile = open("Song library.txt", "a")
+        writefile.write(song_title + ' ' + '-' + ' ' + artist_name + ' ' + '-' + ' ' + song_length + '\n')
+        writefile.close()
+        view_songs()
+
+def view_songs():
+    with open('Song library.txt', 'r') as r:
          for line in sorted(r):
             print( line , end='')
     
-                
+               
 def playlists(create,view):
-    
-    playlists = input("Would you like to create a playlist if so press 1 else press 2 to view other playlsits:")
+    playlists = input("To create a playlist press 1 else press 2 to view other playlsits or press 3 to return to main menu:")
     if playlists == "1":
         create()
-    else:
+    elif playlists == "2":
         view()
+    elif playlists == "3":
+        menu(login,register)
     
 
 def create():
@@ -59,7 +85,12 @@ def view():
             print( line , end='')
 
 
-menu(login,register)  
+menu(login,register)
 playlists(create,view)
+playlist(playlists,add_songs,view_songs)
+add_songs()
+view_songs()
+login()
+
 
 
